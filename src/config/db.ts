@@ -1,30 +1,17 @@
 import {Client} from "pg";
+import {DB_USER,DB_HOST,DB_NAME,DB_PASS} from "./index"
+// import text from "../model"
 const client = new Client({
-  user: 'pg4',
-  host: 'localhost',
-  database: 'telegram_backend',
-  password: '1234',
+  user: DB_USER,
+  host:DB_HOST,
+  database: DB_NAME,
+  password: DB_PASS,
   port: 5432,
 })
-const text = `
-    CREATE TABLE IF NOT EXISTS "users"(
-        "id" SERIAL PRIMARY KEY,
-        "full_name" VARCHAR(100) NOT NULL,
-        "email" VARCHAR(100) NOT NULL,
-        "password" VARCHAR(100) NOT NULL,
-        "role" VARCHAR(15) NOT NULL,
-        "is_Active" BOOLEAN DEFAULT true,
-        "created_at" timestamp DEFAULT NOW(),
-        "is_verified" BOOLEAN DEFAULT false
-    );`;
-    
-client.connect().then(()=>{
-    client.query(text).catch((err)=>{
-        console.log("err",err)
-    })
-    console.log("connected");
-}).catch((err)=>console.log("not connected",err));
+    Promise.allSettled([
+        client.connect()
+        // ,
+        // client.query(text)
+    ]).then(()=>console.log("connected to db")).catch((e)=>console.log("not nonnected",e.message))
 
-
-
-module.exports = client;
+export = client;
